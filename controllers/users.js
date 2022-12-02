@@ -32,15 +32,15 @@ module.exports.login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'Error') {
-        const error = new UnauthorizedError('Требуется авторизация');
+        const error = new UnauthorizedError('Требуется авторизация (контроллер логина)');
         return next(error);
       }
       return next(err);
     });
 };
 
-//  Получаем всех пользователей  //
-/* module.exports.getUsers = async (req, res, next) => {
+//  Получаем всех пользователей - удалить до или после review  //
+module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).send({ users });
@@ -48,7 +48,6 @@ module.exports.login = (req, res, next) => {
     next(err);
   }
 };
-*/
 
 //  Получение текущего юзера  - по user._id  //
 module.exports.getCurrentUser = async (req, res, next) => {

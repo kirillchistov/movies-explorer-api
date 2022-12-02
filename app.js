@@ -1,17 +1,19 @@
 //  Dev DB: bitfilmsdb, Prod DB: moviesdb  //
 //  Создать .env конфигурацию окружения  //
 
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
+//  const bodyParser = require('body-parser');  //
+//  const rateLimit = require('express-rate-limit');  //
 const helmet = require('helmet');
-const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-const handleCors = require('./middlewares/handleCors');
 const limiter = require('./middlewares/limiter');
-const router = require('./routes');
-const handleErrors = require('./utils/handleErrors');
+//  const cookieParser = require('cookie-parser');  //
+const handleCors = require('./middlewares/handleCors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const router = require('./routes');
+const { handleError } = require('./middlewares/handleError');
 
 const {
   PORT = 3001,
@@ -22,15 +24,18 @@ mongoose.connect(MONGO_DB_URL);
 
 const app = express();
 app.use(requestLogger);
-app.use(errorLogger);
 app.use(handleCors);
 app.use(limiter);
 app.use(helmet());
-app.use(express.json());
-app.use(cookieParser());
 
-app.use('/', router);
+app.use(express.json());
+
+app.use(router);
+
+app.use(errorLogger);
 app.use(errors());
-app.use(handleErrors);
+
+//  Добавляем middleware с централизованным обработчиком ошибок  //
+app.use(handleError);
 
 app.listen(PORT);

@@ -4,8 +4,8 @@
   "description": "Movie review sharing website backend training project",
   "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",

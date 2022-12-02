@@ -1,4 +1,5 @@
-//  Роуты для фильмов  //
+//  Роуты для фильмов (3) Get /movies, Post /movies и Delete /movies/_id  //
+//  Удалить лишние роуты, если понятно будет, что они не нужны на след. этапах  //
 const router = require('express').Router();
 const {
   getMovies,
