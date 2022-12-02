@@ -16,7 +16,7 @@ const router = require('./routes');
 const { handleError } = require('./middlewares/handleError');
 
 const {
-  PORT = 3001,
+  PORT = 3003,
   MONGO_DB_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb',
 } = process.env;
 
