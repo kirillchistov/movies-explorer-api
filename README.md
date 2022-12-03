@@ -28,5 +28,3 @@
 * [ ] [Backend](https://api.christoff.nomoredomains.club)
 * [ ] [Frontend](https://christoff.nomoredomains.icu)
 * [ ] [Учебные домены и SSL от Практикума](https://domain.nomoreparties.site/)
-
-
