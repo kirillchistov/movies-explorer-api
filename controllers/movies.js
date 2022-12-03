@@ -25,6 +25,16 @@ module.exports.createMovie = async (req, res, next) => {
   }
 };
 
+//  Получаем все карточки   //
+module.exports.getMovies = async (req, res, next) => {
+  try {
+    const movies = await Movie.find({ owner: req.user._id });
+    res.status(200).send(movies);
+  } catch (err) {
+    next(err);
+  }
+};
+
 //  Удаляем карточку фильма с проверкой свой/чужой   //
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
@@ -47,3 +57,21 @@ module.exports.deleteMovie = (req, res, next) => {
       }
     });
 };
+
+//  Додебажим вариант с aysnc await чуть позже  //
+/*
+const deleteMovie = async (req, res, next) => {
+  try {
+    const movie = await Movie.findById(req.params.movieId);
+    if (!movie) {
+      throw new NoDataError(`Фильм с id ${req.params.movieId} не найден`);
+    } else if (movie.owner.toHexString() !== req.user._id) {
+      throw new ForbiddenError('Фильм другого пользователя удалить нельзя');
+    }
+    await Movie.findByIdAndRemove(req.params.movieId);
+    res.status(200).send(movie);
+  } catch (err) {
+    next(err);
+  }
+};
+*/
