@@ -5,7 +5,7 @@
 * [Кирилл Чистов](https://github.com/kirillchistov), студент веб-факультета "Я.Практикум" (когорта 47)
 
 # Стек технологий
-* [x] HTML, CSS (БЭМ, Nested, адаптив Flex + Grid)
+* [x] HTML, CSS (БЭМ, Flat, адаптив Flex + Grid)
 * [x] JavaScript (ES6, React)
 * [x] Back-end (Node.js, MongoDB, Express, Nginx)
 * [x] Git, WebPack, Babel и т.д.

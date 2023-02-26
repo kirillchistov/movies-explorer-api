@@ -8,6 +8,7 @@ const IncorrectDataError = require('../utils/errors/incorrect-data-error');
 const ConflictError = require('../utils/errors/conflict-error');
 const NoDataError = require('../utils/errors/no-data-error');
 const UnauthorizedError = require('../utils/errors/unauthorized-error');
+const { errorMessages } = require('../utils/constants');
 
 //  Контроллер логина  //
 module.exports.login = (req, res, next) => {
@@ -21,32 +22,12 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '30d' },
       );
-      /* вернём cookie и body
-      res.cookie('jwt', token, {
-        maxAge: 3600 * 24 * 30,
-        httpOnly: true,
-      })
-      */
 
       return res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.name === 'Error') {
-        const error = new UnauthorizedError('Требуется авторизация (контроллер логина)');
-        return next(error);
-      }
       return next(err);
     });
-};
-
-//  Получаем всех пользователей - удалить до или после review  //
-module.exports.getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find({});
-    res.status(200).send({ users });
-  } catch (err) {
-    next(err);
-  }
 };
 
 //  Получение текущего юзера  - по user._id  //
@@ -54,7 +35,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      next(new NoDataError(`Пользователь с id ${req.params.userId} не найден`));
+      next(new NoDataError(errorMessages.NoUserErrorMessage));
       return;
     }
     res.status(200).send(user);
@@ -86,9 +67,9 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectDataError('Переданы некорректные данные'));
+        next(new IncorrectDataError(errorMessages.IncorrectDataErrorMessage));
       } else if (err.code === 11000) {
-        next(new ConflictError(`${req.body.email} - такой пользователь уже зарегистрирован`));
+        next(new ConflictError(errorMessages.UserExistsErrorMessage));
       } else {
         next(err);
       }
@@ -96,25 +77,27 @@ module.exports.createUser = (req, res, next) => {
 };
 
 //  Обновление данных профиля  //
+//  Добавляем обработку ошибки 11000 при смене email на существующий  //
 module.exports.updateProfile = (req, res, next) => {
   const userId = req.user._id;
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(userId, { name, email }, { new: true, runValidators: true, upsert: false })
-    .orFail(new NoDataError(`Пользователь с id: ${req.params.userId} не найден`))
+    .orFail(new NoDataError(errorMessages.NoUserErrorMessage))
     .then((updatedUser) => {
       res.status(200).send(updatedUser);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return next(new IncorrectDataError('Переданы некорректные данные'));
+        return next(new IncorrectDataError(errorMessages.IncorrectDataErrorMessage));
+      } if (err.code === 11000) {
+        return next(new ConflictError(errorMessages.UserExistsErrorMessage));
       }
       return next(err);
     });
 };
 
 //  Контроллер логаута  //
-/* module.exports.logout = (req, res) => {
-//  res.clearCookie('token').send({ message: 'Ваша сессия завершена' });  //
+module.exports.logout = (req, res) => {
+  res.clearCookie('token').send({ message: errorMessages.EndOfSession });
 };
-*/

@@ -15,8 +15,8 @@ nameEN — название фильма на английском языке. �
 //  Создаем подключение к mongoose, валидацию  //
 
 const mongoose = require('mongoose');
-const isURL = require('validator/lib/isURL'); // использование стандартной библиотеки валидации
-const { urlValidatorMessage, requiredValidationMessage } = require('../utils/constants');
+const isURL = require('validator/lib/isURL');
+const { errorMessages, requiredValidationMessage } = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema(
   {
@@ -45,7 +45,7 @@ const movieSchema = new mongoose.Schema(
       required: [true, requiredValidationMessage('image')],
       validate: {
         validator: (v) => isURL(v),
-        message: urlValidatorMessage,
+        message: errorMessages.UrlValidationErrorMessage,
       },
     },
     trailerLink: {
@@ -53,7 +53,7 @@ const movieSchema = new mongoose.Schema(
       required: [true, requiredValidationMessage('trailerLink')],
       validate: {
         validator: (v) => isURL(v),
-        message: urlValidatorMessage,
+        message: errorMessages.UrlValidationErrorMessage,
       },
     },
     thumbnail: {
@@ -61,7 +61,7 @@ const movieSchema = new mongoose.Schema(
       required: [true, requiredValidationMessage('thumbnail')],
       validate: {
         validator: (v) => isURL(v),
-        message: urlValidatorMessage,
+        message: errorMessages.UrlValidationErrorMessage,
       },
     },
     owner: {

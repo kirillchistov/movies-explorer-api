@@ -1,4 +1,4 @@
-//  Класс ошибки для кейса 409: регистрация с email, который есть в базе  //
+//  Когда нет ошибки и все хорошо. Это талисман и пасхалка  //
 class NoError extends Error {
   constructor(message) {
     super(message);
